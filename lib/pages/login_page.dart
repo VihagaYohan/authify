@@ -1,11 +1,53 @@
 import 'package:flutter/material.dart';
 
+import '../utils/animations/login_page_animations.dart';
+
+class AnimatedLoginPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _AnimatedLoginPageState();
+  }
+}
+
+class _AnimatedLoginPageState extends State<AnimatedLoginPage>
+    with SingleTickerProviderStateMixin {
+    var _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = new AnimationController(
+        vsync: this,
+        duration: Duration(seconds: 2),
+        reverseDuration: Duration(milliseconds: 400));
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(Object context) {
+    return LoginPage(_controller);
+  }
+}
+
 class LoginPage extends StatelessWidget {
   final Color _primaryColor = const Color.fromRGBO(125, 191, 211, 1.0);
   final Color _secondaryColor = const Color.fromRGBO(169, 224, 241, 1.0);
 
   var _deviceHeight;
   var _deviceWidth;
+
+  var _controller;
+  EnterAnimation _animation;
+
+  LoginPage(_controller) {
+    this._controller = _controller;
+    _animation = EnterAnimation(_controller);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +79,8 @@ class LoginPage extends StatelessWidget {
   Widget _avatarWidget() {
     double _circleD = _deviceHeight * 0.25;
 
-    return Container(
+    return AnimatedBuilder(animation: _animation.controller, builder: (BuildContext _context, Widget: _widget) {
+      return Container(
         height: _circleD,
         width: _circleD,
         decoration: BoxDecoration(
@@ -46,6 +89,7 @@ class LoginPage extends StatelessWidget {
             image: const DecorationImage(
               image: AssetImage('images/main_avatar.png'),
             )));
+    })
   }
 
   Widget _emailTextField() {
